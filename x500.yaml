@@ -19,12 +19,7 @@ api:
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
-#
-# charging            AA,1C,06,00,00,00,06,00,02,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,1A,28
-# cleaning            AA,1C,06,00,00,00,02,00,02,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,21,2C
-# idel                AA,1C,06,00,00,00,04,00,02,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,21,2D
-# docked              AA,1C,06,00,00,00,08,00,02,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,63,73  
-#
+
 uart:
  - id: uart_bus
    tx_pin: 1
@@ -54,17 +49,7 @@ text_sensor:
   - platform: template
     id: rawstate
     name: state
-#
-#Smart Cleaning:  aa 03 02 22 02 26
-#Spot Cleaning:   aa 03 02 22 01 25
-#Edge Cleaning:   aa 03 02 22 00 24 
-#Stop:            aa 03 02 26 00 28
-#Go Charge:       aa 03 02 22 03 27
-#Move Front:      aa 03 02 21 00 23 aa 03 02 21 04 27
-#Move Back:       aa 03 02 21 03 26 aa 03 02 21 04 27
-#Turn Left:       aa 03 02 21 01 24 aa 03 02 21 04 27
-#Turn Right:      aa 03 02 21 02 25 aa 03 02 21 04 27  
-#   
+
 button:
   - platform: template
     name: "Smart Cleaning"
