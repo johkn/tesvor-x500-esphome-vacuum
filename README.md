@@ -16,24 +16,16 @@ The following functions/status queries are currently possible.
 
 Functions:
 
--Smart cleaning
--Spot cleaning
--Stop
--Back to station
--Forward, backward, left and right
+Smart cleaning, Spot cleaning, Stop, Back to station, 
+Forward, backward, left and right
 
 Status:
 
--Idle
--Cleaning
--Charging
--Docked 
+Idle, Cleaning, Charging, Docked 
 
 To-do list:
 
--Battery indicator
--Cleaned area
--Map (a map of the cleaned area was displayed in the cloud app)
+Battery indicator, Cleaned area, Map (a map of the cleaned area was displayed in the cloud app)
 
 vacuum.yaml extension for configration.ymal so that the X500 is recognized as a vacuum robot:
 
