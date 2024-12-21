@@ -1,0 +1,22 @@
+vacuum:
+  - platform: template
+    vacuums:
+      living_room_vacuum:
+        value_template: "{{ states('sensor.x500_state') }}"
+        friendly_name: vacuum XY
+        start:
+          action: button.press
+          target:
+            entity_id: button.x500_smart_cleaning
+        stop:
+          action: button.press
+          target:
+            entity_id: button.x500_stop
+        clean_spot:
+          action: button.press
+          target:
+            entity_id: button.x500_spot_cleaning
+        return_to_base:
+          action: button.press
+          target:
+            entity_id: button.x500_go_charge
