@@ -1,0 +1,9 @@
+Smart Cleaning:  aa 03 02 22 02 26
+Spot Cleaning:   aa 03 02 22 01 25
+Edge Cleaning:   aa 03 02 22 00 24 
+Stop:            aa 03 02 26 00 28
+Go Charge:       aa 03 02 22 03 27
+Move Front:      aa 03 02 21 00 23 aa 03 02 21 04 27
+Move Back:       aa 03 02 21 03 26 aa 03 02 21 04 27
+Turn Left:       aa 03 02 21 01 24 aa 03 02 21 04 27
+Turn Right:      aa 03 02 21 02 25 aa 03 02 21 04 27
