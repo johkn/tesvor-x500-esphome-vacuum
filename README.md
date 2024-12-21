@@ -35,4 +35,6 @@ Battery indicator
 Cleaned area
 Map (a map of the cleaned area was displayed in the cloud app)
 
-Extension for configration.ymal so that the X500 is recognized as a vacuum robot.
+vacuum.yaml extension for configration.ymal so that the X500 is recognized as a vacuum robot:
+
+vacuum.yaml
