@@ -2,7 +2,7 @@ vacuum:
   - platform: template
     vacuums:
       living_room_vacuum:
-        value_template: "{{ states('sensor.x500_state') }}"
+        value_template: "{{ states('sensor.x500_vacuum_state') }}"
         friendly_name: vacuum XY
         start:
           action: button.press
