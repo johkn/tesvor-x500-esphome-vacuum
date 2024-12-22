@@ -35,21 +35,72 @@ uart:
           UARTDebug::log_hex(direction, bytes, ' ');
 
           if (bytes.size()==31) {
+            if(bytes[6]==0x09)                         
+              id(rawstate).publish_state("error");           
             if(bytes[6]==0x08)
-              id(rawstate).publish_state("docked");
+              id(rawstate).publish_state("docked");             
             if(bytes[6]==0x06)
-              id(rawstate).publish_state("charging");
+              id(rawstate).publish_state("charging");           
+            if(bytes[6]==0x05)
+              id(rawstate).publish_state("hibernated");              
             if(bytes[6]==0x04)
               id(rawstate).publish_state("idle");                
             if(bytes[6]==0x02)
-              id(rawstate).publish_state("cleaning");                         
+              id(rawstate).publish_state("cleaning");                                                      
+          }
+
+          if (bytes.size()==31) {
+            if(bytes[6]==0x09)
+              id(vacstate).publish_state("error");            
+            if(bytes[6]==0x08)
+              id(vacstate).publish_state("docked");
+            if(bytes[6]==0x06)
+              id(vacstate).publish_state("docked");
+            if(bytes[6]==0x05)
+              id(vacstate).publish_state("idle");              
+            if(bytes[6]==0x04)
+              id(vacstate).publish_state("idle");                
+            if(bytes[6]==0x02)
+              id(vacstate).publish_state("cleaning");                                       
+          }          
+
+          if (bytes.size()==31) {
+            if((bytes[6]==0x06) || (bytes[6]==0x05) || (bytes[6]==0x04) || (bytes[6]==0x02))
+              id(batData).publish_state( bytes[30] - 16 );
+          }               
+
+          if (bytes.size()==31) {
+            if(bytes[6]!=0x09)
+              id(errorstate).publish_state("no error");                                          
+          }
+
+          if (bytes[6]==0x09) {
+            if(bytes[28]==0x02)
+              id(errorstate).publish_state("rolling brush blocked");
+            if(bytes[28]==0x04)
+              id(errorstate).publish_state("wheels blocked");                   
+            if(bytes[28]==0x09)
+              id(errorstate).publish_state("front guard jammed");                    
           }
 
 text_sensor:
   - platform: template
     id: rawstate
     name: state
+  - platform: template
+    id: vacstate
+    name: vacuum state    
+  - platform: template
+    id: errorstate
+    name: error state
+      
 
+sensor:
+  - platform: template
+    name: battery
+    id: batData
+    accuracy_decimals: 0
+   
 button:
   - platform: template
     name: "Smart Cleaning"
@@ -95,4 +146,4 @@ button:
     name: "Move Right"
     on_press:
       then:
-      - uart.write: [0xAA, 0x03, 0x02, 0x21, 0x02, 0x25, 0xAA, 0x03, 0x02, 0x21, 0x04, 0x27]                  
+      - uart.write: [0xAA, 0x03, 0x02, 0x21, 0x02, 0x25, 0xAA, 0x03, 0x02, 0x21, 0x04, 0x27]
