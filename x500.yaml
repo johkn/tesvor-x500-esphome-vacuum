@@ -3,7 +3,7 @@ esphome:
   friendly_name: vacuum XY
 
 esp8266:
-  board: esp01_1m
+  board: esp12e
 
 logger:
   baud_rate: 0
