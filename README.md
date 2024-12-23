@@ -1,5 +1,7 @@
 To control and read the state of the Tesvor X500 vacuum robot via ESPHome, you can create an ESPHome configuration file (`x500.yaml`) that defines the commands and status queries. Additionally, you can extend Home Assistant's `configuration.yaml` to recognize the X500 as a vacuum robot. Here's how you can do it:
 
+![ESP Board.](https://github.com/johkn/tesvor-x500-esphome-vacuum/blob/main/ESP12S%20Board.png)
+
 ### 1. ESPHome Configuration (`x500.yaml`)
 
 This file will define the ESPHome configuration for the ESP12S module inside the Tesvor X500 vacuum robot. Here's an example configuration:
