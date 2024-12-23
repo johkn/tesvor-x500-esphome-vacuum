@@ -20,12 +20,17 @@ wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
 
+globals:
+  - id: batdataglob
+    type: short
+    restore_value: true
+
 uart:
- - id: uart_bus
-   tx_pin: 1
-   rx_pin: 3
-   baud_rate: 115200
-   debug:
+  id: uart_bus
+  tx_pin: 1
+  rx_pin: 3
+  baud_rate: 115200
+  debug:
     direction: BOTH
     dummy_receiver: true
     after:
@@ -34,57 +39,59 @@ uart:
       - lambda: |-
           UARTDebug::log_hex(direction, bytes, ' ');
 
-          if (bytes.size()==31) {
-            if(bytes[6]==0x09)                         
-              id(rawstate).publish_state("error");           
-            if(bytes[6]==0x08)
-              id(rawstate).publish_state("docked");             
-            if(bytes[6]==0x06)
-              id(rawstate).publish_state("charging");           
-            if(bytes[6]==0x05)
-              id(rawstate).publish_state("hibernated");              
-            if(bytes[6]==0x04)
-              id(rawstate).publish_state("idle");
-            if(bytes[6]==0x03)
-              id(rawstate).publish_state("returning");
-            if(bytes[6]==0x02)
-              id(rawstate).publish_state("cleaning");                                                      
+          if (bytes.size() == 31) {
+            switch (bytes[6]) {
+              case 0x09:
+                id(rawstate).publish_state("error");
+                id(vacstate).publish_state("error");
+                break;
+              case 0x08:
+                id(rawstate).publish_state("docked");
+                id(vacstate).publish_state("docked");
+                break;
+              case 0x06:
+                id(rawstate).publish_state("charging");
+                id(vacstate).publish_state("docked");
+                break;
+              case 0x05:
+                id(rawstate).publish_state("hibernated");
+                id(vacstate).publish_state("idle");
+                break;
+              case 0x04:
+                id(rawstate).publish_state("idle");
+                id(vacstate).publish_state("idle");
+                break;
+              case 0x03:
+                id(rawstate).publish_state("returning");
+                id(vacstate).publish_state("returning");
+                break;
+              case 0x02:
+                id(rawstate).publish_state("cleaning");
+                id(vacstate).publish_state("cleaning");
+                break;
+            }
+
+            if ((bytes[6] == 0x06) || (bytes[6] == 0x05) || (bytes[6] == 0x04) || (bytes[6] == 0x02)) {
+              id(batdataglob) = bytes[29];
+            }
+
+            if (bytes[6] != 0x09) {
+              id(errorstate).publish_state("no error");
+            }
           }
 
-          if (bytes.size()==31) {
-            if(bytes[6]==0x09)
-              id(vacstate).publish_state("error");            
-            if(bytes[6]==0x08)
-              id(vacstate).publish_state("docked");
-            if(bytes[6]==0x06)
-              id(vacstate).publish_state("docked");
-            if(bytes[6]==0x05)
-              id(vacstate).publish_state("idle");
-            if(bytes[6]==0x03)
-              id(rawstate).publish_state("returning");
-            if(bytes[6]==0x04)
-              id(vacstate).publish_state("idle");                
-            if(bytes[6]==0x02)
-              id(vacstate).publish_state("cleaning");                                       
-          }          
-
-          if (bytes.size()==31) {
-            if((bytes[6]==0x06) || (bytes[6]==0x05) || (bytes[6]==0x04) || (bytes[6]==0x02))
-              id(batData).publish_state( bytes[30] - 16 );
-          }               
-
-          if (bytes.size()==31) {
-            if(bytes[6]!=0x09)
-              id(errorstate).publish_state("no error");                                          
-          }
-
-          if (bytes[6]==0x09) {
-            if(bytes[28]==0x02)
-              id(errorstate).publish_state("rolling brush blocked");
-            if(bytes[28]==0x04)
-              id(errorstate).publish_state("wheels blocked");                   
-            if(bytes[28]==0x09)
-              id(errorstate).publish_state("front guard jammed");                    
+          if (bytes[6] == 0x09) {
+            switch (bytes[28]) {
+              case 0x02:
+                id(errorstate).publish_state("rolling brush blocked");
+                break;
+              case 0x04:
+                id(errorstate).publish_state("wheels blocked");
+                break;
+              case 0x09:
+                id(errorstate).publish_state("front guard jammed");
+                break;
+            }
           }
 
 text_sensor:
@@ -97,57 +104,57 @@ text_sensor:
   - platform: template
     id: errorstate
     name: error state
-      
 
 sensor:
   - platform: template
     name: battery
-    id: batData
+    id: batdata
     accuracy_decimals: 0
-   
+    lambda: return id(batdataglob);
+
 button:
   - platform: template
     name: "Smart Cleaning"
     on_press:
       then:
-      - uart.write: [0xAA, 0x03, 0x02, 0x22, 0x02, 0x26]
+        - uart.write: [0xAA, 0x03, 0x02, 0x22, 0x02, 0x26]
   - platform: template
     name: "Spot Cleaning"
     on_press:
       then:
-      - uart.write: [0xAA, 0x03, 0x02, 0x22, 0x01, 0x25]
+        - uart.write: [0xAA, 0x03, 0x02, 0x22, 0x01, 0x25]
   - platform: template
     name: "Edge Cleaning"
     on_press:
       then:
-      - uart.write: [0xAA, 0x03, 0x02, 0x22, 0x00, 0x24]
+        - uart.write: [0xAA, 0x03, 0x02, 0x22, 0x00, 0x24]
   - platform: template
     name: "Stop"
     on_press:
       then:
-      - uart.write: [0xAA, 0x03, 0x02, 0x26, 0x00, 0x28]
+        - uart.write: [0xAA, 0x03, 0x02, 0x26, 0x00, 0x28]
   - platform: template
     name: "Go Charge"
     on_press:
       then:
-      - uart.write: [0xAA, 0x03, 0x02, 0x22, 0x03, 0x27]
+        - uart.write: [0xAA, 0x03, 0x02, 0x22, 0x03, 0x27]
   - platform: template
     name: "Move Front"
     on_press:
       then:
-      - uart.write: [0xAA, 0x03, 0x02, 0x21, 0x00, 0x23, 0xAA, 0x03, 0x02, 0x21, 0x04, 0x27]
+        - uart.write: [0xAA, 0x03, 0x02, 0x21, 0x00, 0x23, 0xAA, 0x03, 0x02, 0x21, 0x04, 0x27]
   - platform: template
     name: "Move Back"
     on_press:
       then:
-      - uart.write: [0xAA, 0x03, 0x02, 0x21, 0x03, 0x26, 0xAA, 0x03, 0x02, 0x21, 0x04, 0x27]
+        - uart.write: [0xAA, 0x03, 0x02, 0x21, 0x03, 0x26, 0xAA, 0x03, 0x02, 0x21, 0x04, 0x27]
   - platform: template
     name: "Move Left"
     on_press:
       then:
-      - uart.write: [0xAA, 0x03, 0x02, 0x21, 0x01, 0x24, 0xAA, 0x03, 0x02, 0x21, 0x04, 0x27]
+        - uart.write: [0xAA, 0x03, 0x02, 0x21, 0x01, 0x24, 0xAA, 0x03, 0x02, 0x21, 0x04, 0x27]
   - platform: template
     name: "Move Right"
     on_press:
       then:
-      - uart.write: [0xAA, 0x03, 0x02, 0x21, 0x02, 0x25, 0xAA, 0x03, 0x02, 0x21, 0x04, 0x27]
+        - uart.write: [0xAA, 0x03, 0x02, 0x21, 0x02, 0x25, 0xAA, 0x03, 0x02, 0x21, 0x04, 0x27]
