@@ -44,7 +44,9 @@ uart:
             if(bytes[6]==0x05)
               id(rawstate).publish_state("hibernated");              
             if(bytes[6]==0x04)
-              id(rawstate).publish_state("idle");                
+              id(rawstate).publish_state("idle");
+            if(bytes[6]==0x03)
+              id(rawstate).publish_state("returning");
             if(bytes[6]==0x02)
               id(rawstate).publish_state("cleaning");                                                      
           }
@@ -57,7 +59,9 @@ uart:
             if(bytes[6]==0x06)
               id(vacstate).publish_state("docked");
             if(bytes[6]==0x05)
-              id(vacstate).publish_state("idle");              
+              id(vacstate).publish_state("idle");
+            if(bytes[6]==0x03)
+              id(rawstate).publish_state("returning");
             if(bytes[6]==0x04)
               id(vacstate).publish_state("idle");                
             if(bytes[6]==0x02)
