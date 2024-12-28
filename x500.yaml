@@ -88,6 +88,9 @@ uart:
               case 0x04:
                 id(errorstate).publish_state("wheels blocked");
                 break;
+              case 0x07:
+                id(errorstate).publish_state("side brush blocked");
+                break;                
               case 0x09:
                 id(errorstate).publish_state("front guard jammed");
                 break;
