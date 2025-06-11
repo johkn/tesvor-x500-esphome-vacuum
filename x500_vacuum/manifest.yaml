@@ -1,0 +1,13 @@
+name: "X500 Vacuum"
+description: "ESPHome external component for XY/X500 (esp8266) UART controlled vacuum robots"
+version: "1.0.0"
+files:
+  - x500_vacuum.h
+  - x500_vacuum.cpp
+  - button_x500_vacuum.h
+  - button_x500_vacuum.cpp
+  - sensor_x500_battery.h
+  - sensor_x500_battery.cpp
+  - text_sensor_x500_state.h
+  - text_sensor_x500_state.cpp
+esphome_version: "2023.3.0"
