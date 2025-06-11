@@ -1,24 +1,19 @@
-#pragma once
-
-#include "esphome.h"
-#include "x500_vacuum.h"
+#include "esphome/core/component.h"
+#include "esphome/core/defines.h"
 
 namespace esphome {
 namespace x500_vacuum {
 
-class X500VacuumButton : public button::Button {
- public:
-  X500VacuumButton(X500Vacuum *vacuum, const std::vector<uint8_t> &cmd)
-      : vacuum_(vacuum), cmd_(cmd) {}
+static const char *const TAG = "x500_vacuum";
 
- protected:
-  void press_action() override {
-    if (vacuum_) vacuum_->send_command(cmd_);
-  }
-
-  X500Vacuum *vacuum_;
-  std::vector<uint8_t> cmd_;
-};
-
-}  // namespace x500_vacuum
-}  // namespace esphome
+// Hier das YAML-Schema:
+static const auto CONFIG_SCHEMA = cv::Schema({
+  cv::Required("uart_id"): cv::string,
+  cv::Optional("rawstate_id"): cv::string,
+  cv::Optional("vacstate_id"): cv::string,
+  cv::Optional("errorstate_id"): cv::string,
+  cv::Optional("batdata_id"): cv::string,
+});
+...
+}
+}
